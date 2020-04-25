@@ -282,22 +282,22 @@ new Vue({
       this.send.invoice = Object.freeze(cleanInvoice);
     },
     payInvoice: function () {
-      var self = this;
+      var self = this;  /* what's the point of this? make JS pythonic? ;-) */
 
-      dismissPaymentMsg = this.$q.notify({
+      let dismissPaymentMsg = this.$q.notify({
         timeout: 0,
         message: 'Processing payment...',
         icon: null
       });
 
       LNbits.api.payInvoice(this.g.wallet, this.send.data.bolt11).then(function (response) {
-        self.send.paymentChecker = setInterval(function () {
-          LNbits.api.getPayment(self.g.wallet, response.data.checking_id).then(function (res) {
+        this.send.paymentChecker = setInterval(function () {
+          LNbits.api.getPayment(this.g.wallet, response.data.checking_id).then(function (res) {
             if (res.data.paid) {
-              self.send.show = false;
-              clearInterval(self.send.paymentChecker);
+              this.send.show = false;
+              clearInterval(this.send.paymentChecker);
               dismissPaymentMsg();
-              self.fetchPayments();
+              this.fetchPayments();
             }
           });
         }, 2000);
